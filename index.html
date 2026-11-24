@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shadowplay</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="container">
+    <!-- Шапка -->
+    <header class="header">
+      <a href="#" class="logo">Shadowplay</a>
+      <nav>
+        <a href="about.html" class="nav-link">About</a>
+      </nav>
+    </header>
+
+      <!-- Сюда скрипт автоматически подставит карточки -->
+    <main class="gallery" id="gallery-container"></main>
+
+    <!-- Нижняя часть: цитата и фото -->
+    <footer class="footer">
+      <p class="quote">
+        designed by Nao.
+      </p>
+      
+     
+      </div>
+    </footer>
+  </div>
+
+  <!-- Подключаем базу данных и скрипт отрисовки -->
+    <script src="data.js"></script>
+  <script>
+    const gallery = document.getElementById('gallery-container');
+
+    portfolioData.forEach(series => {
+      const link = document.createElement('a');
+      link.href = `series.html?id=${series.id}`;
+      link.className = 'card';
+      
+      // Добавляем картинку и блок с названием
+      link.innerHTML = `
+        <img src="${series.cover}" alt="${series.title}">
+        <div class="card-overlay">
+          <span class="card-title">${series.title}</span>
+        </div>
+      `;
+      
+      gallery.appendChild(link);
+    });
+  </script>
+
+
+   
+
+</body>
+</html>

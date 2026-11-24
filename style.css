@@ -1,0 +1,168 @@
+/* Базовый сброс и настройки страницы */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #050505;
+  color: #dcdcdc;
+  font-family: 'Courier New', Courier, monospace;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+
+/* Основной контейнер для отступов по краям */
+.container {
+  width: 100%;
+  max-width: 1100px;
+  padding: 60px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Шапка */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+
+.logo,
+.nav-link {
+  color: #dcdcdc;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.logo:hover,
+.nav-link:hover {
+  opacity: 0.7;
+}
+
+/* Сетка из 4 прямоугольников */
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 55px; /* Расстояние между блоками */
+  margin: 100px 0;
+}
+
+/* Карточка серии */
+.card {
+  position: relative; /* Чтобы текст позиционировался внутри карточки */
+  display: block;
+  background-color: #111;
+  aspect-ratio: 3 / 4;
+  width: 100%;
+  overflow: hidden;   /* Обрезает всё, что выходит за рамки */
+  text-decoration: none;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+/* Слой с затемнением и названием (по умолчанию скрыт) */
+.card-overlay {
+  position: absolute;
+  inset: 0; /* Растягиваем на всю площадь карточки (top:0, right:0, bottom:0, left:0) */
+  background-color: rgba(5, 5, 5, 0.72); /* Темная полупрозрачная вуаль */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
+  opacity: 0; /* Скрыто до наведения */
+  transition: opacity 0.3s ease;
+}
+
+.card-title {
+  color: #dcdcdc;
+  font-size: 14px;
+  line-height: 1.4;
+  transform: translateY(6px); /* Легкий сдвиг вниз для плавного выезда */
+  transition: transform 0.3s ease;
+}
+
+/* Эффекты при наведении курсора */
+.card:hover .card-overlay {
+  opacity: 1; /* Плавно проявляем затемнение и текст */
+}
+
+.card:hover .card-title {
+  transform: translateY(0); /* Текст встает ровно по центру */
+}
+
+.card:hover img {
+  transform: scale(1.03); /* Легкое, еле заметное приближение фото */
+}
+
+
+/* Нижняя секция */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-top: 40px;
+}
+
+.quote {
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 380px;
+}
+
+.footer-art {
+  width: 240px;
+  height: 240px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.footer-art img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Адаптация под мобильные экраны */
+@media (max-width: 768px) {
+  .gallery {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin: 60px 0;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+  }
+
+  .footer-art {
+    align-self: flex-end;
+  }
+}
+
+
+/* На устройствах без курсора (телефоны, планшеты) показываем затемнение и название сразу */
+@media (hover: none), (max-width: 768px) {
+  .card-overlay {
+    opacity: 1;
+    background-color: rgba(5, 5, 5, 0.55); /* Чуть легче затемнение, чтобы было лучше видно фото */
+  }
+
+  .card-title {
+    transform: translateY(0);
+  }
+}

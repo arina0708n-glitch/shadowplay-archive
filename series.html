@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Серия — Shadowplay</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Шапка серии */
+    .series-header {
+      margin: 60px 0 40px;
+    }
+    .series-title {
+      font-size: 20px;
+      font-weight: normal;
+      margin-bottom: 12px;
+    }
+    .series-desc {
+      font-size: 13px;
+      color: #999;
+      max-width: 500px;
+      line-height: 1.5;
+    }
+
+    /* Сетка: 3 фотографии в ряд */
+    .photos-list {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 80px;
+    }
+
+    .photos-list img {
+      width: 100%;
+      aspect-ratio: 3 / 4;
+      object-fit: cover;
+      display: block;
+      cursor: zoom-in; /* Показываем лупу при наведении */
+      transition: opacity 0.25s ease;
+    }
+
+    .photos-list img:hover {
+      opacity: 0.85;
+    }
+
+    /* --- СТИЛИ ЛАЙТБОКСА --- */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background-color: rgba(5, 5, 5, 0.96);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .lightbox.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .lightbox-img {
+      max-width: 86vw;
+      max-height: 82vh;
+      object-fit: contain;
+      user-select: none;
+    }
+
+    .lb-btn {
+      position: fixed;
+      background: none;
+      border: none;
+      color: #dcdcdc;
+      font-family: inherit;
+      font-size: 20px;
+      cursor: pointer;
+      padding: 20px;
+      opacity: 0.6;
+      transition: opacity 0.2s ease;
+      user-select: none;
+    }
+
+    .lb-btn:hover {
+      opacity: 1;
+    }
+
+    .lb-close {
+      top: 15px;
+      right: 25px;
+      font-size: 16px;
+    }
+
+    .lb-prev {
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .lb-next {
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .lb-counter {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: #888;
+      letter-spacing: 1px;
+    }
+
+    /* Адаптив */
+    @media (max-width: 900px) {
+      .photos-list {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .photos-list {
+        grid-template-columns: 1fr;
+      }
+      .lightbox-img {
+        max-width: 94vw;
+        max-height: 78vh;
+      }
+      .lb-prev, .lb-next {
+        padding: 12px;
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header class="header">
+      <a href="index.html" class="logo">← Назад</a>
+      <a href="index.html" class="nav-link">Shadowplay</a>
+    </header>
+
+    <div class="series-header">
+      <h1 class="series-title" id="title">Загрузка...</h1>
+      <p class="series-desc" id="desc"></p>
+    </div>
+
+    <main class="photos-list" id="photos-container"></main>
+  </div>
+
+  <!-- Модальное окно лайтбокса -->
+  <div class="lightbox" id="lightbox">
+    <button class="lb-btn lb-close" id="lb-close">[ESC]</button>
+    <button class="lb-btn lb-prev" id="lb-prev">←</button>
+    <img class="lightbox-img" id="lb-img" src="" alt="">
+    <button class="lb-btn lb-next" id="lb-next">→</button>
+    <div class="lb-counter" id="lb-counter"></div>
+  </div>
+
+  <script src="data.js"></script>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const seriesId = params.get('id');
+    const currentSeries = portfolioData.find(item => item.id === seriesId);
+
+    // Элементы лайтбокса
+    const lightbox = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lb-img');
+    const lbCounter = document.getElementById('lb-counter');
+    let currentIndex = 0;
+    let photosList = [];
+
+    function openLightbox(index) {
+      currentIndex = index;
+      updateLightboxImage();
+      lightbox.classList.add('active');
+      document.body.style.overflow = 'hidden'; // Блокируем прокрутку фона
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    function updateLightboxImage() {
+      lbImg.src = photosList[currentIndex];
+      const currentNum = String(currentIndex + 1).padStart(2, '0');
+      const totalNum = String(photosList.length).padStart(2, '0');
+      lbCounter.textContent = `${currentNum} / ${totalNum}`;
+    }
+
+    function showNext() {
+      currentIndex = (currentIndex + 1) % photosList.length;
+      updateLightboxImage();
+    }
+
+    function showPrev() {
+      currentIndex = (currentIndex - 1 + photosList.length) % photosList.length;
+      updateLightboxImage();
+    }
+
+    // Отрисовка серии
+    if (currentSeries) {
+      document.title = `${currentSeries.title} — Shadowplay`;
+      document.getElementById('title').textContent = `${currentSeries.title} (${currentSeries.year})`;
+      document.getElementById('desc').textContent = currentSeries.description;
+
+      photosList = currentSeries.photos;
+      const container = document.getElementById('photos-container');
+
+      photosList.forEach((photoUrl, index) => {
+        const img = document.createElement('img');
+        img.src = photoUrl;
+        img.loading = "lazy";
+        img.addEventListener('click', () => openLightbox(index));
+        container.appendChild(img);
+      });
+    } else {
+      document.getElementById('title').textContent = 'Серия не найдена';
+    }
+
+    // События кнопок и клика по фону
+    document.getElementById('lb-close').addEventListener('click', closeLightbox);
+    document.getElementById('lb-next').addEventListener('click', showNext);
+    document.getElementById('lb-prev').addEventListener('click', showPrev);
+
+    lightbox.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox(); // Закрыть при клике мимо фото
+    });
+
+    // Управление с клавиатуры
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox.classList.contains('active')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowRight') showNext();
+      if (e.key === 'ArrowLeft') showPrev();
+    });
+
+    // Поддержка свайпов на телефоне
+    let touchStartX = 0;
+    lightbox.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches.screenX;
+    }, { passive: true });
+
+    lightbox.addEventListener('touchend', (e) => {
+      const touchEndX = e.changedTouches.screenX;
+      if (touchStartX - touchEndX > 50) showNext(); // Свайп влево -> след. фото
+      if (touchEndX - touchStartX > 50) showPrev(); // Свайп вправо -> пред. фото
+    }, { passive: true });
+  </script>
+
+</body>
+</html>

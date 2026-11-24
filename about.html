@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Shadowplay</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Двухколоночный макет: текст слева, фото справа */
+    .about-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 60px;
+      margin: 80px 0;
+    }
+
+    .about-info {
+      max-width: 500px;
+      flex: 1;
+    }
+
+    .about-text p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #dcdcdc;
+      margin-bottom: 24px;
+    }
+
+    .about-meta {
+      margin-top: 50px;
+      padding-top: 24px;
+      border-top: 1px solid #1f1f1f;
+      font-size: 13px;
+    }
+
+    .meta-value a {
+      color: #dcdcdc;
+      text-decoration: none;
+      border-bottom: 1px solid #333;
+      transition: border-color 0.2s ease;
+    }
+
+    .meta-value a:hover {
+      border-color: #dcdcdc;
+    }
+
+    /* Блок с фотографией справа */
+    .about-photo {
+      width: 340px;
+      flex-shrink: 0; /* Не дает картинке сжиматься */
+    }
+
+    .about-photo img {
+      width: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Адаптив для телефонов и планшетов */
+    @media (max-width: 820px) {
+      .about-content {
+        flex-direction: column;
+        gap: 40px;
+        margin: 50px 0;
+      }
+
+      .about-photo {
+        width: 100%;
+        max-width: 380px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header class="header">
+      <a href="index.html" class="logo">← Назад</a>
+      <a href="index.html" class="nav-link">Shadowplay</a>
+    </header>
+
+    <main class="about-content">
+      <!-- Левая колонка: текст и ссылка -->
+      <div class="about-info">
+        <div class="about-text">
+          <p>
+            Архив фотографий, визуальный дневник, в общем называйте как хотите
+          </p>
+          <p>
+            Почему Shadowplay? Потому что Joy Division. У города в котором я живу вайб этой группы, у жизни периодически вайб этой группы, на фотках это влияние тоже отразилось.
+          </p>
+          <p>
+            А еще потому что фотография это рисование светом. Об этом любят говорить и звучит конечно красиво, но прежде всего свет и тень определяют друг друга. Это все же их игра.
+          </p>
+          <p>
+            Такие вот пирожки с котятками
+          </p>
+        </div>
+
+        <div class="about-meta">
+          <div class="meta-row">
+            <span class="meta-value"><a href="https://www.instagram.com/itsnao.raw" target="_blank">www.instagram.com/itsnao.raw</a></span>
+            <div>
+                 <span class="meta-value">тг: @nao_0708</span>
+            </div>
+          </div>
+        </div>
+
+         
+      </div>
+
+
+      
+
+      <!-- Правая колонка: фотография -->
+      <div class="about-photo">
+        <!-- Укажи путь к своей фотке -->
+        <img src="images/shadowplay.jpg" alt="Shadowplay">
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p class="quote">
+        designed by Nao.
+      </p>
+    </footer>
+  </div>
+
+</body>
+</html>
